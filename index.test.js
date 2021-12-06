@@ -20,6 +20,10 @@ test('returns false for an invalid Medicare card number (incorrect check digit)'
   expect(validateMedicareNumber('6950507381')).toBeFalsy();
 });
 
+test('returns false for an invalid Medicare card number (last digit is zero)', () => {
+  expect(validateMedicareNumber('6950507380')).toBeFalsy();
+});
+
 test('returns true for a valid Medicare card number', () => {
   expect(validateMedicareNumber('6950507391')).toBeTruthy();
 });
