@@ -8,6 +8,7 @@ module.exports = function (cardNumber) {
 
   try {
     const cardNumbers = cardNumber.split('').map(number => parseInt(number, 10));
+    if (cardNumbers[9] === 0) return false;
     const first8 = cardNumbers.slice(0, 8);
     const first8Sum = first8.reduce(function (currentSum, number, index) {
       return currentSum + (number * multipliers[index]);
@@ -17,6 +18,4 @@ module.exports = function (cardNumber) {
   } catch (err) {
     return false;
   }
-
-  return false;
 }
