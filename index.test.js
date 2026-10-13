@@ -1,15 +1,23 @@
 const validateMedicareNumber = require('./index');
 
 test('throws if the Medicard card number is not provided', () => {
-  expect(() => validateMedicareNumber()).toThrowError();
+  expect(() => validateMedicareNumber()).toThrow();
 });
 
 test('throws if the Medicard card number is not a string', () => {
-  expect(() => validateMedicareNumber(123)).toThrowError();
+  expect(() => validateMedicareNumber(123)).toThrow();
 });
 
 test('returns false for an invalid Medicare card number (has alphabetic character)', () => {
   expect(validateMedicareNumber('95050739A')).toBeFalsy();
+});
+
+test('returns false for an invalid Medicare card number (has alphabetic issue/version number)', () => {
+  expect(validateMedicareNumber('695050739A')).toBeFalsy();
+});
+
+test('returns false for an invalid Medicare card number (first digit outside 2-6)', () => {
+  expect(validateMedicareNumber('1950507341')).toBeFalsy();
 });
 
 test('returns false for an invalid Medicare card number (length not equal to 10)', () => {
@@ -26,4 +34,12 @@ test('returns false for an invalid Medicare card number (last digit is zero)', (
 
 test('returns true for a valid Medicare card number', () => {
   expect(validateMedicareNumber('6950507391')).toBeTruthy();
+});
+
+test('returns true for a valid Medicare card number with a two-digit issue/version number', () => {
+  expect(validateMedicareNumber('26831553110')).toBeTruthy();
+});
+
+test('returns true for a formatted valid Medicare card number with a two-digit issue/version number', () => {
+  expect(validateMedicareNumber('2683 15531 10')).toBeTruthy();
 });
