@@ -4,18 +4,39 @@ const multipliers = [1, 3, 7, 9, 1, 3, 7, 9];
 
 module.exports = function (cardNumber) {
   if (!cardNumber || typeof cardNumber !== 'string') throw new Error('cardNumber must be a `string`');
-  if (cardNumber.length !== 10) return false;
 
-  try {
-    const cardNumbers = cardNumber.split('').map(number => parseInt(number, 10));
-    if (cardNumbers[9] === 0) return false;
-    const first8 = cardNumbers.slice(0, 8);
-    const first8Sum = first8.reduce(function (currentSum, number, index) {
-      return currentSum + (number * multipliers[index]);
-    }, 0);
-    const remainder = first8Sum % 10;
-    return cardNumbers[8] === remainder;
-  } catch (err) {
-    return false;
+  let digitCount = 0;
+  let first8Sum = 0;
+  let checkDigit = -1;
+  let issueNumber = 0;
+
+  for (let index = 0; index < cardNumber.length; index++) {
+    const charCode = cardNumber.charCodeAt(index);
+
+    // Allow spaces in formatted card numbers, e.g. `2683 15531 10`.
+    if (charCode === 32) continue;
+
+    const digit = charCode - 48;
+    if (digit < 0 || digit > 9) return false;
+
+    if (digitCount === 0) {
+      if (digit < 2 || digit > 6) return false;
+    } else if (digitCount > 10) {
+      return false;
+    }
+
+    if (digitCount < 8) {
+      first8Sum += digit * multipliers[digitCount];
+    } else if (digitCount === 8) {
+      checkDigit = digit;
+    } else {
+      issueNumber = (issueNumber * 10) + digit;
+    }
+
+    digitCount++;
   }
-}
+
+  if (digitCount !== 10 && digitCount !== 11) return false;
+
+  return issueNumber > 0 && checkDigit === first8Sum % 10;
+};
